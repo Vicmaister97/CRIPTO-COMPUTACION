@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """ Autor: Víctor García Carrera victorgarcia@correo.ugr.es
-	Implementa el test de Miller Rabin con el número de entrada "num" para mostrar
-	si "num" es PRIMO o COMPUESTO con probabilidad de error de 1/(4^TESTIGOS)
+	Obtiene mediante el test de Miller Rabin para el número de entrada "num" para los testigos desde 2 a "num"-1
+	TODOS los FALSO TESTIGO de primalidad
 	"""
 
 import sys

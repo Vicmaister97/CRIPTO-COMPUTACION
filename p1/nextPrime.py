@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """ Autor: Víctor García Carrera victorgarcia@correo.ugr.es
-	Comprueba mediante el test de Miller Rabin para el número de entrada "num" y el testigo "test"
-	si "test" es un FALSO TESTIGO de primalidad o no(que dice que es primo siendo compuesto)
+	Utiliza el test de Miller Rabin para obtener a partir de un número de entrada "num"
+	el siguiente primo (mejor dicho, el siguiente mejor probable primo), entre otras funciones similares
 	"""
 
 import sys
@@ -30,13 +30,12 @@ def read_in():
 	if len(sys.argv) != 3:
 		print ("Error en los params de entrada")
 		exit()
-
 	p = int(sys.argv[1])
-	testigo = int(sys.argv[2])
+	num = int(sys.argv[2])
 
 	# Optimizamos el elevar el numero "a" a la potencia "b"
 
-	return p, testigo
+	return p, num
 
 # Optimización mejor, coste alg O(log(b))
 def potenciamodular (a, b, m):
@@ -51,9 +50,6 @@ def potenciamodular (a, b, m):
 #--------------
 
 def miller_rabin0(p):
-	if (p%2 == 0):		# Si el número p es PAR
-		print "Numero PAR, es COMPUESTO"
-		exit()
 	m = p-1	##Como introducimos un número que es impar
 	u = 0
 	while m%2 == 0:	# Expresamos m (p-1) como 2^u * s
@@ -68,9 +64,12 @@ def miller_rabin0(p):
 def obtener_a (p,t):
 	L = []
 	while len(L) < t:
-		a = randint(2,p-2)	# CUIDADO CON SI EL RANGO INCLUYE P-2
+		a = randint(2,p-1)	# CUIDADO CON SI EL RANGO INCLUYE P-2
 		if gcd(a,p) == 1:
 			L.append(a)
+		else:				# No seguimos el test, ya hemos encontrado un divisor de p
+			#print "Testigo (NO es coprimo con): " + str(a)
+			return False
 
 	return L
 
@@ -97,55 +96,90 @@ def miller_rabin1(p,a,u,s):
 	# Si ha llegado hasta aquí, puede ser primo
 	return True
 
+
 # p >= 5, p impar
 ##Si encontramos un a primo con p tal que no se cumple ninguna de las dos condiciones definidas anteriormente, podemos 
 ##afirmar que el numero p es compuesto y entonces a es un "testigo" de la no primalidad de p
-def miller_rabin(p,test,t):
-
-	# Lista de primeros 50 primos para probar, antes del test, si n NO es coprimo con ellos
-	"""listaPrimos = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227]
-	for primo in listaPrimos:
-		if gcd(p,primo) != 1:
-			print "NO ES COPRIMO CON " + str(primo)
-			return False"""
+def miller_rabin(p,t):
+	if (p%2 == 0):		# Si el número p es PAR
+		return False
 	u,s = miller_rabin0(p)
 	#print u,s
-
-	# SI ME DICEN QUE YA ES COMPUESTO
-	"""
-	if miller_rabin1(p,test,u,s) == True:
-		print test, "es un FALSO TESTIGO"
-		return True
-	print test, "NO es un falso testigo"
-	return False"""
-	
 	L = obtener_a(p,t)
-	
-	#print "TESTIGOS" + str(L)
-	L.append(test)
-	Compuesto = False
-	for a in L:
-		#findFalsosTestigos(p,a,u,s)
-		if (miller_rabin1(p,a,u,s)==True):
-			if Compuesto == True:
-				if a == test:
-					print test, "es un FALSO TESTIGO"
-					return True
-			#print p, "es PROBABLE que sea PRIMO"
-		else:
-			#print p, "es COMPUESTO"
-			Compuesto = True
-			#return False
-	print test, "NO es un falso testigo"
+	#L = [2,3,5,10]
+	#print L
+	if L == False:
+		#print p, "es COMPUESTO"
+		return False
 
-	
+	else:
+		#print "TESTIGOS" + str(L)
+		for a in L:
+			#findFalsosTestigos(p,a,u,s)
+			if (miller_rabin1(p,a,u,s)==False):
+				#print p, "es COMPUESTO"
+				return False
+			#else:
+				#print p, "es PROBABLE que sea PRIMO"
+
+		#print p, "es PRIMO con probabilidad 1/(4^10)"
+		return True
+
+##	Función que devuelve el siguiente número primo
+def nextPrime (num):
+	numorg = num
+	TESTIGOS = 10
+	while True:	#	Utilizamos el test de miller-rabin con los naturales sucesivos al numero "num" hasta dar con un probable primo
+		num+=1
+		if miller_rabin(num, TESTIGOS) == True:
+			#print "El siguiente primo es el " + str(num)
+			return num
+
+	print "No se ha encontrado el siguiente primo a " + str(numorg)
+	return False
+
+##	Función que devuelve el siguiente número primo fuerte
+def nextprimoFuerte (num):
+	primo = nextPrime(num)
+	TESTIGOS = 10
+
+	while miller_rabin ( (primo-1)/2 , TESTIGOS) != True:
+		primo = nextPrime(primo)
+
+	return primo
+
+
+##	Función que devuelve un número primo fuerte de num bits
+def PrimoFuerte(num):
+	potencia = 2**(num-1)
+	primoFuerte = nextprimoFuerte(potencia)
+	if potencia < 2**num:
+		#print "ENCONTRADO primo fuerte de " + str(num) + " bits:	" + str(primoFuerte)
+		return primoFuerte
+	else:
+		print "No se ha encontrado un primo fuerte de " + str(num) + " bits"
+		return primoFuerte
+
 def main():	
-	p, test = read_in()
+	p, num = read_in()
 
-	print "--- TEST MILLER-RABIN de " + str(p) + " ---"
+	print "--- Cálculo del siguiente número primo (y primo fuerte) a " + str(p) + " ---"
 
 	TESTIGOS = 10
-	miller_rabin(p, test, TESTIGOS)
+	
+	nextprime = nextPrime(p)
+	print "El siguiente primo es el " + str(nextprime)
+	nextstrongprime = nextprimoFuerte(p)
+	print "El siguiente primo FUERTE es el " + str(nextstrongprime)
+
+
+	print "\n\n--- Cálculo de un número primo fuerte de " + str(num) + " bits---"
+
+	nbits = PrimoFuerte(num)
+	if nbits != False:
+		print "ENCONTRADO primo fuerte de " + str(num) + " bits:	" + str(nbits)
+
+
 
 	# PROBABILDIAD DE ERROR = 1/(4^10)
 
