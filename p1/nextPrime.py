@@ -127,15 +127,17 @@ def miller_rabin(p,t):
 
 ##	Función que devuelve el siguiente número primo
 def nextPrime (num):
-	numorg = num
+	if num%2 == 0:	# Si es par
+		num-=1
+
 	TESTIGOS = 10
-	while True:	#	Utilizamos el test de miller-rabin con los naturales sucesivos al numero "num" hasta dar con un probable primo
-		num+=1
+	while True:		#	Utilizamos el test de miller-rabin con los naturales sucesivos al numero "num" hasta dar con un probable primo
+		num+=2      #   Damos saltos de 2 en 2 evitando los pares
 		if miller_rabin(num, TESTIGOS) == True:
 			#print "El siguiente primo es el " + str(num)
 			return num
 
-	print "No se ha encontrado el siguiente primo a " + str(numorg)
+	print "No se ha encontrado el siguiente primo "
 	return False
 
 ##	Función que devuelve el siguiente número primo fuerte
