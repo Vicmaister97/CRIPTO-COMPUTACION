@@ -81,6 +81,7 @@ def miller_rabin1(p,a,u,s):
 	for i in xrange(0, u):
 		elevar = (2**i)*s
 		potencias.append(potenciamodular(a, elevar, p))
+
 	
 	if ( (any (i == p-1 for i in potencias) == True) or (all (i == 1 for i in potencias) == True) ):
 		return True		# Es probable que sea primo
@@ -105,17 +106,18 @@ def miller_rabin1(p,a,u,s):
 def miller_rabin(p,t):
 
 	# Lista de primeros 50 primos para probar, antes del test, si n NO es coprimo con ellos
-	listaPrimos = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227]
+	"""listaPrimos = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227]
 	for primo in listaPrimos:
 		if gcd(p,primo) != 1:
 			if p != primo:	# Si p no es un número de la lista
 				print "NO ES COPRIMO CON " + str(primo)
 				print p, "es COMPUESTO"
-				return False
+				return False"""
+
 	u,s = miller_rabin0(p)
 	#print u,s
-	L = obtener_a(p,t)
-	#L = [2,3,5,10]
+	#L = obtener_a(p,t)
+	L = [10]
 	#print L
 	if L == False:
 		print p, "es COMPUESTO"
@@ -124,6 +126,7 @@ def miller_rabin(p,t):
 	else:
 		#print "TESTIGOS" + str(L)
 		for a in L:
+			print "PROBANDO CON TESTIGO: " + str(a)
 			#findFalsosTestigos(p,a,u,s)
 			if (miller_rabin1(p,a,u,s)==False):
 				print p, "es COMPUESTO"

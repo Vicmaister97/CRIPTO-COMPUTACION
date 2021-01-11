@@ -1,7 +1,7 @@
-
+import time
+import base64
 
 #Dado un texto (string) solo con mayusculas lo transforma en una lista de números (A-0,...,Z-26). Por un espacio añade un -1
-
 def cadenatolista(cadena):
     l = []
     for s in cadena:
@@ -74,6 +74,16 @@ def cifra_vigenere(texto,clave):
      texto_cifrado = listatocadena(lista_texto)
      return texto_cifrado
 
+#Dado un texto y una clave  (ambos un string con mayúsculas), lo cifra usando el cifrado de Vigenère
+def descifra_vigenere(texto,clave):
+     lista_texto = cadenatolista(texto)
+     lista_clave = cadenatolista(clave)
+     (n,m) = (len(lista_texto),len(lista_clave))
+     for i in range(n):
+          lista_texto[i] = (lista_texto[i] - lista_clave[i%m])%27
+     texto_cifrado = listatocadena(lista_texto)
+     return texto_cifrado
+
 
 """Dado un texto y una permutación de las letras (diccionario) lo cifra aplicando la sustitución dada
 La sustitución hay que darla como un diccionario. Por ejemplo:
@@ -84,7 +94,7 @@ def cifra_sustitucion(texto,permutacion):
      texto_cifrado = ''
      for x in texto:
          y = permutacion.get(x)
-         texto_cifrado = texto_cifrado + y
+         texto_cifrado = texto_cifrado + str(y)
      return texto_cifrado
 
 """permutación es una lista de dos strings (de igual longitud). Por ejemplo, ['AEG',fkl']. En este caso, se recorre el texto y cada vez que encuentre un carácter que coincida con un de los que hay en 'AEG' lo sustituye por el correspondiente carácter en 'fkl'"""
@@ -191,5 +201,157 @@ def ocurrencias(cadena,texto,n):
           if cadena == cadenab:
               ocur +=1
      return ocur
-          
-  
+
+f1 = open('VictorGarciaMarcelKemp1.txt', mode='r', encoding='utf-8')    #Resuelto
+f2 = open('VictorGarciaMarcelKemp2.txt', mode='r', encoding='utf-8')    #Resuelto
+f3 = open('VictorGarciaMarcelKemp3.txt', mode='r', encoding='utf-8')    #Resuelto
+f4 = open('VictorGarciaMarcelKemp4.txt', mode='r', encoding='utf-8')    #Resuelto
+#f5 = open('Textocifrado.txt', mode='r', encoding='utf-8')               #Resuelto
+
+#------------------------------------
+""" #Algoritmo Cesar
+abc="ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
+#cad="ABCZ"
+cad3=f3.read()
+
+max = 0
+frecuencias = frecuencias(cad3)
+print(frecuencias)
+# Obtenemos la letra del texto cifrado
+for frecletra in frecuencias:
+    if frecletra > max:
+        max = frecletra
+
+# La letra con mayor frecuencia en un texto en castellano es la "E", codificada como 4
+# La letra con mayor frecuencia en frecuencias(cad3) será la "E" cifrada
+posclave = frecuencias.index(max) - 4
+
+print("Posible clave por análisis de frecuencias: K = " + str(posclave) )
+
+descif=""
+for k in range(1,27):
+    for i in cad3:
+        if i in abc:
+            # Función de descifrado de Cesar con clave k
+            descif += abc[(abc.index(i)-k)%(len(abc))]
+        else:
+            descif += i
+    print(descif)
+    descif=""
+    time.sleep(2)
+print("Texto descifrado con clave: K = 10")
+k=10
+for i in cad3:
+        if i in abc:
+            # Función de descifrado de Cesar con clave k
+            descif += abc[(abc.index(i)-k)%(len(abc))]
+        else:
+            descif += i
+
+print(descif) """
+
+#----------------------------------------
+"""#Algoritmo de sustitucion
+sustitucion = {'A':'M','B':'X','C':'T','D':'G','E':'C','F':'K','G':'P','H':'J','I':'I','J':'B','K':'Z','L':'H',
+               'M':'A', 'N':'R', 'Ñ':'S','O':'V','P':'Q','Q':'Y','R':'F','S':'L', 'T':'O', 'U':'N',
+               'V':'Ñ', 'W':'E','X':'W', 'Y':'D','Z':'U'}
+#perm=['','QUE']
+cad=f2.read()       
+print(ngramas_repetidos(cad,1))
+print(ngramas_repetidos(cad,2))
+print(ngramas_repetidos(cad,3))
+print(ngramas_repetidos(cad,4))
+print(frecuencias(cad))
+print(cifra_sustitucion(cad,sustitucion))"""
+#----------------------------------------
+#Algoritmo de transposicion
+cad='QUE'
+cad4=f4.read()
+#print(frecuencias(cad4))
+    
+#print(divide_cadena(cad4,2))
+#print(ngramas_repetidos(cad4,3))
+""" for k in range(1,len(cad4)):
+    if(ocurrencias(cad,cad4,k)>5):
+        print(ocurrencias(cad,cad4,k), k)  """
+
+""" for k in range(1,len(cad4)): 
+    if((k%31)==0): 
+        print(cifra_transposicion(cad4,k), k) #217  """
+
+#print(ocurrencias(cad,cad4,31))
+
+
+ 
+""" texto=divide_cadena(cad4,217)
+
+for x in range(0,31):
+    txt=""
+    for i in range(0,217):
+        for j in range(0,31):
+            txt+=texto[i][(j+x)%31]
+    
+    print(txt)
+    print(x)
+    time.sleep(3) """
+
+"""
+num=0
+txt=""
+
+for y in range(0,len(cad4)):
+    txt+=cad4[num]
+    num=siguiente(6731,31,num)
+    
+    
+print(txt) """
+
+
+#print(divide_cadena(cad4,217))
+#txt2=cifra_transposicion(cad4,217)
+#print(ngramas_repetidos(txt,3))
+#print(len(cad4))
+
+#------------------------------------------------------------------
+#Cifrado de Vigenere
+
+#cad1=f1.read()
+
+#print(ngramas_repetidos(cad1,3))
+#(['RJO', 'IJG', 'FFI', 'SUP', 'QGF'], [15, 14, 11, 13, 12])
+""" print(apariciones('IJG',cad1)) """
+#RJO: 204, 408, 444, 1339, 156, 413, 564, 1608, 48, 228, 252, 960, 264, 1452 mcd=1
+#IJG: 1284, 588, 204, 12, 324, 588, 1080, 192, 264, 528, 456, 144, 1500 mcd=12
+
+""" txt=divide_cadena(cad1,12)
+print(frecuencias(txt[11]))          #R-O-C-A-M-B-O-L-E-S-C-O
+print(ngramas_repetidos(txt[11],1))  """
+
+#print(descifra_vigenere(cad1,'ROCAMBOLESCO'))
+
+#----------------------------------------------------------------------
+#Texto optativo: Vigenere
+#cad5=f5.read()
+""" for i in range(1,101):
+    txt=divide_cadena(cad5,i)
+    print(indice_coincidencia(txt[0]), i) """
+
+""" print(ngramas_repetidos(cad5,1))
+print(ngramas_repetidos(cad5,2))
+print(ngramas_repetidos(cad5,3))
+print(ngramas_repetidos(cad5,4)) """
+
+#print(apariciones('ENL',cad5))     
+#620, 230, 155, 115, 180, 15, 140, 470, 100, 70, 155, 350 mcd=5
+
+""" txt=divide_cadena(cad5,5)
+print(frecuencias(txt[4]))          #C-L-A-V-E
+print(ngramas_repetidos(txt[4],1))   """
+
+#print(descifra_vigenere(cad5,'CLAVE'))
+
+f1.close()
+f2.close()
+f3.close()
+f4.close()
+f5.close()
